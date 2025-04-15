@@ -1,0 +1,11 @@
+openapi: "3.0.3"
+info:
+  title: Cohost API
+  version: "0.1.0"
+servers:
+  - url: https://api.server.test/v1
+paths:
+  /events:
+    $ref: "./paths/events/index.yaml"
+  /events/{id}:
+    $ref: "./paths/events/[id].yaml"
