@@ -1,11 +1,2891 @@
-openapi: "3.0.3"
+openapi: 3.1.0
 info:
-  title: Cohost API
-  version: "0.1.0"
-servers:
-  - url: https://api.server.test/v1
+  title: Cohost API Schema
+  version: 1.0.0-beta.1
+components:
+  schemas:
+    ActiveOfferingStatus:
+      enum:
+        - hidden
+        - live
+        - sold-out
+      title: ActiveOfferingStatus
+      type: string
+    Address:
+      properties:
+        address_1:
+          title: address_1
+          type: string
+        address_2:
+          title: address_2
+          type: string
+        city:
+          title: city
+          type: string
+        country:
+          title: country
+          type: string
+        formattedAddress:
+          title: formattedAddress
+          type: string
+        localized_address_display:
+          title: localized_address_display
+          type: string
+        localized_area_display:
+          title: localized_area_display
+          type: string
+        localized_multi_line_address_display:
+          items:
+            type: string
+          title: localized_multi_line_address_display
+          type: array
+        postal_code:
+          title: postal_code
+          type: string
+        premise:
+          title: premise
+          type: string
+        region:
+          title: region
+          type: string
+      required:
+        - address_1
+        - city
+        - country
+        - postal_code
+        - region
+      title: Address
+      type: object
+    ApiVersion:
+      const: '2025-04-15'
+      type: string
+    BuzzBuilder:
+      properties:
+        countLabel:
+          title: countLabel
+          type: string
+        profiles:
+          items:
+            properties:
+              id:
+                title: id
+                type: string
+              name:
+                title: name
+                type: string
+              photoURL:
+                title: photoURL
+                type: string
+            required:
+              - id
+              - name
+              - photoURL
+            type: object
+          title: profiles
+          type: array
+      required:
+        - countLabel
+        - profiles
+      title: BuzzBuilder
+      type: object
+    CalculatedCostComponent:
+      properties:
+        base:
+          title: base
+          type: string
+        bucket:
+          $ref: '#/components/schemas/CostBucket'
+        cost:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: cost
+          type: string
+        discount:
+          title: discount
+          type: 'null'
+        id:
+          title: id
+          type: string
+        name:
+          title: name
+          type: string
+        payer:
+          enum:
+            - attendee
+            - organizer
+          title: payer
+          type: string
+        recipient:
+          title: recipient
+          type: string
+        value:
+          title: value
+          type: number
+        version:
+          const: '2025-03-25'
+          title: version
+          type: string
+      required:
+        - base
+        - bucket
+        - cost
+        - discount
+        - id
+        - name
+        - payer
+        - recipient
+        - value
+        - version
+      title: CalculatedCostComponent
+      type: object
+    CartSession:
+      description: |-
+        Represents a temporary or persisted cart before order placement.
+        Focuses on user intent and checkout prep, not post-purchase records.
+      properties:
+        changed:
+          description: >-
+            ISO 8601 timestamp indicating when the record was last updated, if
+            applicable.
+          title: changed
+          type: string
+        context:
+          $ref: '#/components/schemas/Partial<OrderContext>'
+        contextId:
+          description: |-
+            Namespaced identifier indicating what the order is associated with.
+            Format: "{type}_{id}", where type is "evt", "ven", or "org".
+          pattern: ^((evt|ven|org)_[a-zA-Z0-9]+)$
+          title: contextId
+          type: string
+        costs:
+          description: |-
+            Estimated totals based on current cart state.
+            These values are subject to recalculation before checkout.
+          properties:
+            delivery:
+              description: >-
+                A string representing a currency amount in the format
+                `"USD,1000"` where:
+
+                - `"USD"` is the 3-letter ISO currency code.
+
+                - The number after the comma represents the value in **minor
+                units** (e.g., cents for USD).
+
+
+                For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+              pattern: ^\w{3},\d+$
+              title: delivery
+              type: string
+            discount:
+              description: >-
+                A string representing a currency amount in the format
+                `"USD,1000"` where:
+
+                - `"USD"` is the 3-letter ISO currency code.
+
+                - The number after the comma represents the value in **minor
+                units** (e.g., cents for USD).
+
+
+                For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+              pattern: ^\w{3},\d+$
+              title: discount
+              type: string
+            fee:
+              description: >-
+                A string representing a currency amount in the format
+                `"USD,1000"` where:
+
+                - `"USD"` is the 3-letter ISO currency code.
+
+                - The number after the comma represents the value in **minor
+                units** (e.g., cents for USD).
+
+
+                For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+              pattern: ^\w{3},\d+$
+              title: fee
+              type: string
+            subtotal:
+              description: >-
+                A string representing a currency amount in the format
+                `"USD,1000"` where:
+
+                - `"USD"` is the 3-letter ISO currency code.
+
+                - The number after the comma represents the value in **minor
+                units** (e.g., cents for USD).
+
+
+                For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+              pattern: ^\w{3},\d+$
+              title: subtotal
+              type: string
+            tax:
+              description: >-
+                A string representing a currency amount in the format
+                `"USD,1000"` where:
+
+                - `"USD"` is the 3-letter ISO currency code.
+
+                - The number after the comma represents the value in **minor
+                units** (e.g., cents for USD).
+
+
+                For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+              pattern: ^\w{3},\d+$
+              title: tax
+              type: string
+            total:
+              description: >-
+                A string representing a currency amount in the format
+                `"USD,1000"` where:
+
+                - `"USD"` is the 3-letter ISO currency code.
+
+                - The number after the comma represents the value in **minor
+                units** (e.g., cents for USD).
+
+
+                For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+              pattern: ^\w{3},\d+$
+              title: total
+              type: string
+          required:
+            - delivery
+            - discount
+            - fee
+            - subtotal
+            - tax
+            - total
+          title: costs
+          type: object
+        coupons:
+          description: |-
+            List of applied coupons used in the order.
+            Supports multiple entries based on organizer preferences.
+          items:
+            $ref: '#/components/schemas/CouponSummary'
+          title: coupons
+          type: array
+        created:
+          description: ISO 8601 timestamp indicating when the record was created.
+          title: created
+          type: string
+        currency:
+          description: The currency code used for this order in ISO 4217 format.
+          pattern: ^[A-Z]{3}$
+          title: currency
+          type: string
+        customer:
+          $ref: '#/components/schemas/Partial<Customer>'
+        forwarded:
+          description: Partner-forwarded data (e.g. utm, session metadata).
+          title: forwarded
+        id:
+          description: Unique identifier for the record.
+          title: id
+          type: string
+        items:
+          description: Items the user has added to their cart.
+          items:
+            $ref: '#/components/schemas/Partial<OrderItem>'
+          title: items
+          type: array
+        meta:
+          additionalProperties: {}
+          description: Internal metadata, flags, debug hints, or experimental context.
+          properties:
+            priceLock:
+              description: |-
+                Snapshot of when pricing was calculated and locked.
+                Useful for honoring totals during a grace window.
+              properties:
+                lockedAt:
+                  title: lockedAt
+                  type: string
+                ttl:
+                  title: ttl
+                  type: number
+              required:
+                - lockedAt
+              title: priceLock
+              type: object
+            resolvedContext:
+              $ref: '#/components/schemas/ResolvedCartContext'
+          title: meta
+          type: object
+        paymentIntentClientSecret:
+          description: >-
+            Stripe PaymentIntent client secret, used by frontend (e.g.
+            Stripe.js).
+
+            Required for completing the payment flow.
+          title: paymentIntentClientSecret
+          type: string
+        paymentIntentId:
+          description: |-
+            Stripe PaymentIntent ID linked to this cart, if created.
+            Used for confirming payment on the backend.
+          title: paymentIntentId
+          type: string
+        status:
+          enum:
+            - abandoned
+            - cancelled
+            - completed
+            - started
+          title: status
+          type: string
+        uid:
+          description: Authenticated user ID, if available.
+          title: uid
+          type: string
+        version:
+          const: '2025-04-15'
+          description: |-
+            Schema version identifier for this record.
+            Helps manage compatibility across client-server contracts.
+          title: version
+          type: string
+      required:
+        - context
+        - contextId
+        - created
+        - currency
+        - id
+        - items
+        - meta
+        - status
+        - uid
+        - version
+      title: CartSession
+      type: object
+    ContextId:
+      description: >-
+        A namespaced identifier representing the entity an order is associated
+        with.
+
+
+        Must begin with one of the following prefixes:
+
+        - "evt_" for events
+
+        - "ven_" for venues
+
+        - "org_" for organizers
+      pattern: ^((evt|ven|org)_[a-zA-Z0-9]+)$
+      type: string
+    CostBase:
+      properties:
+        cost:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: cost
+          type: string
+        delivery:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: delivery
+          type: string
+        fee:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: fee
+          type: string
+        tax:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: tax
+          type: string
+      required:
+        - cost
+        - delivery
+        - fee
+        - tax
+      title: CostBase
+      type: object
+    CostBucket:
+      enum:
+        - delivery
+        - fee
+        - item
+        - tax
+      title: CostBucket
+      type: string
+    CostComponent:
+      properties:
+        base:
+          title: base
+          type: string
+        bucket:
+          $ref: '#/components/schemas/CostBucket'
+        cap:
+          $ref: '#/components/schemas/CostComponentCap'
+        currency:
+          title: currency
+          type: string
+        details:
+          title: details
+        id:
+          title: id
+          type: string
+        name:
+          title: name
+          type: string
+        payer:
+          enum:
+            - attendee
+            - organizer
+          title: payer
+          type: string
+        recipient:
+          title: recipient
+          type: string
+        rules:
+          items:
+            $ref: '#/components/schemas/CostComponentRule'
+          title: rules
+          type: array
+        version:
+          const: '2025-03-25'
+          title: version
+          type: string
+      required:
+        - base
+        - bucket
+        - currency
+        - id
+        - name
+        - payer
+        - recipient
+        - rules
+        - version
+      title: CostComponent
+      type: object
+    CostComponentCap:
+      properties:
+        op:
+          const: cap
+          title: op
+          type: string
+        type:
+          enum:
+            - absolute
+            - percentage
+          title: type
+          type: string
+        value:
+          description: >-
+            The value of the cap. If type is percentage, it is a percentage of
+            the base value.
+
+            If type is absolute, it is an absolute value.
+
+
+            Absolute value is represented in the same denomination as the cost.
+
+            i.e. if the cost is in cents, the absolute value should be in cents.
+
+
+            percentage value is represented as a decimal.
+
+            For example, 10% is represented as 0.1.
+          title: value
+          type: number
+      required:
+        - op
+        - type
+        - value
+      title: CostComponentCap
+      type: object
+    CostComponentRule:
+      properties:
+        conditions:
+          description: >-
+            The rule will be applied to the cost component if the conditions are
+            met.
+          items:
+            $ref: '#/components/schemas/CostComponentRuleCondition'
+          title: conditions
+          type: array
+        name:
+          description: Friendly name of the rule.
+          title: name
+          type: string
+      required:
+        - conditions
+        - name
+      title: CostComponentRule
+      type: object
+    CostComponentRuleCondition:
+      properties:
+        eval:
+          description: >-
+            evaluator, will define a function or endpoint to evaluate the
+            condition.
+          title: eval
+          type: string
+        field:
+          description: >-
+            The field to evaluate the condition against.
+
+            For example, "item.price" or "order.total".
+
+            The field should be a valid path to the field in the cost component
+            base.
+          title: field
+          type: string
+        operator:
+          $ref: '#/components/schemas/EqualOperator'
+        value:
+          description: >-
+            Can be a value such as number, currencyAmount, an ISO date string,
+            etc...
+          title: value
+      required:
+        - field
+        - operator
+        - value
+      title: CostComponentRuleCondition
+      type: object
+    CostOp:
+      description: Represents a cost operation to be applied in a pricing formula.
+      properties:
+        value:
+          description: >-
+            The operand value used in the cost operation.
+
+
+            The unit should match the denomination of the cost.
+
+            For example, if cost is expressed in cents, this value should also
+            be in cents.
+          title: value
+          type: number
+      required:
+        - value
+      title: CostOp
+      type: object
+    Coupon:
+      description: >-
+        Represents a discount coupon that can be applied to one or more
+        offerings in an event platform.
+      properties:
+        amountOff:
+          description: >-
+            Fixed amount to deduct from the order total.
+
+            This is a currency-less value that matches the event or order
+            currency.
+
+            Example: `10.00` = $10.00 off.
+          maximum: 99999
+          minimum: 0
+          title: amountOff
+          type: number
+        changed:
+          description: >-
+            ISO 8601 timestamp indicating when the record was last updated, if
+            applicable.
+          title: changed
+          type: string
+        code:
+          description: |-
+            The code used to redeem this coupon during checkout.
+            For public or coded discounts.
+          title: code
+          type: string
+        companyId:
+          description: ID of the company that issued this coupon.
+          title: companyId
+          type: string
+        constraints:
+          description: >-
+            Time-based constraints that control when the coupon is active and
+            when it expires.
+
+            Supports absolute dates or relative time offsets (in seconds) from
+            event start.
+
+
+            - If `start` is omitted, the coupon is valid immediately.
+
+            - If `end` is omitted, the coupon remains valid until the event
+            ends.
+          properties:
+            end:
+              $ref: '#/components/schemas/TimeOrOffset'
+            start:
+              $ref: '#/components/schemas/TimeOrOffset'
+          title: constraints
+          type: object
+        contextIds:
+          description: >-
+            List of context IDs (e.g., event, venue, or organizer) this coupon
+            is valid for.
+
+            Follows the format: "evt_xxx", "org_xxx", etc.
+          items:
+            type: string
+          title: contextIds
+          type: array
+        created:
+          description: ISO 8601 timestamp indicating when the record was created.
+          title: created
+          type: string
+        description:
+          description: |-
+            Internal description for the coupon.
+            This is not necessarily visible to users.
+          title: description
+          type: string
+        id:
+          description: Unique identifier for the record.
+          title: id
+          type: string
+        limit:
+          description: |-
+            Total number of times this coupon can be used.
+            A value of `0` means unlimited usage.
+          title: limit
+          type: number
+        offeringIds:
+          description: >-
+            List of offering IDs (e.g., ticket classes) this coupon applies to.
+
+            If empty, the coupon applies to all eligible offerings in its
+            context.
+          items:
+            type: string
+          title: offeringIds
+          type: array
+        percentOff:
+          description: |-
+            Percentage to deduct from the item or order total.
+            Range is 0–100. Use 0 for no percentage-based discount.
+          maximum: 100
+          minimum: 0
+          title: percentOff
+          type: number
+        quantitySold:
+          description: |-
+            Number of times this coupon has been redeemed.
+            Read-only field.
+          title: quantitySold
+          type: number
+        status:
+          description: |-
+            Current status of the coupon for administrative purposes.
+            Determines whether it can be redeemed at checkout.
+          enum:
+            - active
+            - disabled
+            - expired
+            - sold_out
+          title: status
+          type: string
+        type:
+          description: Type of coupon — determines how it's distributed or applied.
+          enum:
+            - access
+            - coded
+            - hold
+            - public
+          title: type
+          type: string
+        version:
+          const: '2025-04-15'
+          description: |-
+            Schema version identifier.
+            Used to ensure compatibility between coupon formats.
+          title: version
+          type: string
+      required:
+        - amountOff
+        - code
+        - companyId
+        - constraints
+        - contextIds
+        - created
+        - description
+        - id
+        - limit
+        - offeringIds
+        - percentOff
+        - quantitySold
+        - status
+        - type
+        - version
+      title: Coupon
+      type: object
+    CouponSummary:
+      properties:
+        amountOff:
+          description: >-
+            Fixed amount to deduct from the order total.
+
+            This is a currency-less value that matches the event or order
+            currency.
+
+            Example: `10.00` = $10.00 off.
+          maximum: 99999
+          minimum: 0
+          title: amountOff
+          type: number
+        code:
+          description: |-
+            The code used to redeem this coupon during checkout.
+            For public or coded discounts.
+          title: code
+          type: string
+        id:
+          description: Unique identifier for the record.
+          title: id
+          type: string
+        offeringIds:
+          description: >-
+            List of offering IDs (e.g., ticket classes) this coupon applies to.
+
+            If empty, the coupon applies to all eligible offerings in its
+            context.
+          items:
+            type: string
+          title: offeringIds
+          type: array
+        percentOff:
+          description: |-
+            Percentage to deduct from the item or order total.
+            Range is 0–100. Use 0 for no percentage-based discount.
+          maximum: 100
+          minimum: 0
+          title: percentOff
+          type: number
+      required:
+        - amountOff
+        - code
+        - id
+        - offeringIds
+        - percentOff
+      title: CouponSummary
+      type: object
+    CurrencyAmount:
+      description: >-
+        A string representing a currency amount in the format `"USD,1000"`
+        where:
+
+        - `"USD"` is the 3-letter ISO currency code.
+
+        - The number after the comma represents the value in **minor units**
+        (e.g., cents for USD).
+
+
+        For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+      pattern: ^\w{3},\d+$
+      type: string
+    Customer:
+      allOf:
+        - $ref: '#/components/schemas/Person'
+        - $ref: '#/components/schemas/PersonContact'
+        - properties:
+            uid:
+              title: uid
+              type: string
+          required:
+            - uid
+          type: object
+      title: Customer
+    DataRecord:
+      description: |-
+        Base metadata for any record stored in the system.
+        Includes an ID and timestamps for creation and optional updates.
+      properties:
+        changed:
+          description: >-
+            ISO 8601 timestamp indicating when the record was last updated, if
+            applicable.
+          title: changed
+          type: string
+        created:
+          description: ISO 8601 timestamp indicating when the record was created.
+          title: created
+          type: string
+        id:
+          description: Unique identifier for the record.
+          title: id
+          type: string
+      required:
+        - created
+        - id
+      title: DataRecord
+      type: object
+    EqualOperator:
+      description: >-
+        A set of comparison operators used for evaluating conditional
+        expressions.
+
+
+        Supported operators:
+
+        - '==' (equal to)
+
+        - '!=' (not equal to)
+
+        - '<' (less than)
+
+        - '<=' (less than or equal to)
+
+        - '>' (greater than)
+
+        - '>=' (greater than or equal to)
+      enum:
+        - '!='
+        - <
+        - <=
+        - '=='
+        - '>'
+        - '>='
+      ignore: ''
+      title: EqualOperator
+      type: string
+    EventBase:
+      properties:
+        companyId:
+          title: companyId
+          type: string
+        currency:
+          description: Curerncy used for the event.
+          title: currency
+          type: string
+        end:
+          description: The end date and time of the event in ISO 8601 format.
+          title: end
+          type: string
+        flyer:
+          $ref: '#/components/schemas/Photo'
+        id:
+          title: id
+          type: string
+        isSeries:
+          title: isSeries
+          type: boolean
+        location:
+          $ref: '#/components/schemas/Location'
+        name:
+          title: name
+          type: string
+          x-faker: name.firstName
+        public:
+          description: Is the event public?
+          title: public
+          type: boolean
+        start:
+          description: The start date and time of the event in ISO 8601 format.
+          title: start
+          type: string
+        status:
+          $ref: '#/components/schemas/EventStatus'
+        summary:
+          title: summary
+          type: string
+        tz:
+          description: The timezone in which the event is taking place.
+          title: tz
+          type: string
+        venue:
+          $ref: '#/components/schemas/VenueBase'
+      required:
+        - companyId
+        - currency
+        - end
+        - id
+        - name
+        - public
+        - start
+        - status
+        - summary
+        - tz
+      title: EventBase
+      type: object
+    EventFeature:
+      properties:
+        data:
+          title: data
+        description:
+          title: description
+          type: string
+        enabled:
+          title: enabled
+          type: boolean
+        iconName:
+          title: iconName
+          type: string
+        id:
+          title: id
+          type: string
+        key:
+          title: key
+          type: string
+        logoUri:
+          title: logoUri
+          type: string
+        meta:
+          title: meta
+        order:
+          title: order
+          type: number
+        title:
+          title: title
+          type: string
+        type:
+          title: type
+          type: string
+        version:
+          title: version
+          type: string
+        widgetUri:
+          title: widgetUri
+          type: string
+      required:
+        - data
+        - description
+        - enabled
+        - id
+        - key
+        - order
+        - title
+        - type
+        - widgetUri
+      title: EventFeature
+      type: object
+    EventProfile:
+      description: EventProfile respresent a public view of an event
+      properties:
+        buzzBuilder:
+          $ref: '#/components/schemas/BuzzBuilder'
+        channels:
+          items:
+            type: string
+          title: channels
+          type: array
+        companyId:
+          title: companyId
+          type: string
+        currency:
+          description: Curerncy used for the event.
+          title: currency
+          type: string
+        description:
+          $ref: '#/components/schemas/MultipartText'
+        end:
+          description: The end date and time of the event in ISO 8601 format.
+          title: end
+          type: string
+        flyer:
+          $ref: '#/components/schemas/Photo'
+        id:
+          title: id
+          type: string
+        isSeries:
+          title: isSeries
+          type: boolean
+        location:
+          $ref: '#/components/schemas/Location'
+        meta:
+          title: meta
+        name:
+          title: name
+          type: string
+          x-faker: name.firstName
+        organizer:
+          title: organizer
+        priceRange:
+          properties:
+            max:
+              title: max
+              type: string
+            min:
+              title: min
+              type: string
+          title: priceRange
+          type: object
+        public:
+          description: Is the event public?
+          title: public
+          type: boolean
+        searchTags:
+          items:
+            type: string
+          title: searchTags
+          type: array
+        sections:
+          items:
+            type: string
+          title: sections
+          type: array
+        slug:
+          title: slug
+          type: string
+        start:
+          description: The start date and time of the event in ISO 8601 format.
+          title: start
+          type: string
+        status:
+          $ref: '#/components/schemas/EventStatus'
+        summary:
+          title: summary
+          type: string
+        tags:
+          items:
+            type: string
+          title: tags
+          type: array
+        ticketPrices:
+          items:
+            type: string
+          title: ticketPrices
+          type: array
+        tz:
+          description: The timezone in which the event is taking place.
+          title: tz
+          type: string
+        url:
+          title: url
+          type: string
+        venue:
+          $ref: '#/components/schemas/VenueBase'
+        widgets:
+          items:
+            $ref: '#/components/schemas/EventFeature'
+          title: widgets
+          type: array
+      required:
+        - channels
+        - companyId
+        - currency
+        - description
+        - end
+        - id
+        - name
+        - organizer
+        - public
+        - searchTags
+        - sections
+        - slug
+        - start
+        - status
+        - summary
+        - tags
+        - ticketPrices
+        - tz
+        - widgets
+      title: EventProfile
+      type: object
+    EventStatus:
+      description: >-
+        Status of the event lifecycle.
+
+
+        - `archived`: The event is archived and no longer visible in listings.
+
+        - `draft`: The event is still being edited and not yet published.
+
+        - `live`: The event is published and accepting actions (e.g., ticket
+        sales).
+
+        - `started`: The event has begun.
+
+        - `ended`: The event has ended.
+
+        - `completed`: The event has concluded successfully and is finalized.
+
+        - `canceled`: The event was canceled and is no longer active.
+      enum:
+        - archived
+        - canceled
+        - completed
+        - draft
+        - ended
+        - live
+        - started
+      title: EventStatus
+      type: string
+    GeometryPoint:
+      properties:
+        lat:
+          title: lat
+          type: number
+        lng:
+          title: lng
+          type: number
+      required:
+        - lat
+        - lng
+      title: GeometryPoint
+      type: object
+    Location:
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        geometry:
+          $ref: '#/components/schemas/LocationGeometry'
+        name:
+          title: name
+          type: string
+        placeId:
+          title: placeId
+          type: string
+        timezone:
+          title: timezone
+          type: string
+        venueId:
+          title: venueId
+          type: string
+      required:
+        - address
+        - geometry
+        - name
+        - placeId
+        - venueId
+      title: Location
+      type: object
+    LocationGeometry:
+      properties:
+        geoHash:
+          title: geoHash
+          type: string
+        lat:
+          title: lat
+          type: number
+        lng:
+          title: lng
+          type: number
+        locality:
+          title: locality
+          type: string
+        region:
+          title: region
+          type: string
+        vicinity:
+          title: vicinity
+          type: string
+        viewport:
+          properties:
+            northeast:
+              $ref: '#/components/schemas/GeometryPoint'
+            southwest:
+              $ref: '#/components/schemas/GeometryPoint'
+          required:
+            - northeast
+            - southwest
+          title: viewport
+          type: object
+        zoom:
+          title: zoom
+          type: number
+      required:
+        - lat
+        - lng
+      title: LocationGeometry
+      type: object
+    MultipartText:
+      description: A rich content object that supports multiple representations of text.
+      properties:
+        blocks:
+          description: Optional rich editor blocks (if structured editing is supported).
+          items: {}
+          title: blocks
+          type: array
+        html:
+          description: HTML version of the content.
+          title: html
+          type: string
+        md:
+          description: Markdown version of the content.
+          title: md
+          type: string
+        text:
+          description: Plain text version of the content.
+          title: text
+          type: string
+      title: MultipartText
+      type: object
+    Offering:
+      properties:
+        capacity:
+          description: The maximum number of tickets that can be sold for this offering.
+          title: capacity
+          type: number
+          x-faker:
+            datatype.number:
+              max: 100
+              min: 10
+        changed:
+          description: >-
+            ISO 8601 timestamp indicating when the record was last updated, if
+            applicable.
+          title: changed
+          type: string
+        constraints:
+          description: |-
+            Any constraints that apply to this offering.
+            it can be time limit, quantity limit, etc...
+          title: constraints
+        costs:
+          $ref: '#/components/schemas/OfferingCosts'
+        created:
+          description: ISO 8601 timestamp indicating when the record was created.
+          title: created
+          type: string
+        description:
+          title: description
+          type: string
+        hidden:
+          title: hidden
+          type: boolean
+        id:
+          description: Unique identifier for the record.
+          title: id
+          type: string
+        included:
+          description: Items, products ,and vouchers included in this offering.
+          items:
+            $ref: '#/components/schemas/PackageInclude'
+          title: included
+          type: array
+          x-faker:
+            array.length: 0
+        instructions:
+          title: instructions
+          type: string
+        maximumQuantity:
+          description: Maximum number of tickets that can be purchased in a single order.
+          title: maximumQuantity
+          type: number
+          x-faker:
+            datatype.number:
+              max: 15
+              min: 4
+        minimumQuantity:
+          description: Minimum number of tickets that can be purchased in a single order.
+          title: minimumQuantity
+          type: number
+          x-faker:
+            datatype.number:
+              max: 4
+              min: 1
+        name:
+          description: Offering name, can be ticket name, vaucher name, etc...
+          title: name
+          type: string
+          x-faker: commerce.productName
+        order_confirmation_message:
+          title: order_confirmation_message
+          type: string
+        package:
+          title: package
+          type: boolean
+        priceCategory:
+          $ref: '#/components/schemas/PriceCategory'
+        quantitySold:
+          title: quantitySold
+          type: number
+        sorting:
+          title: sorting
+          type: number
+        status:
+          $ref: '#/components/schemas/OfferingStatus'
+        type:
+          $ref: '#/components/schemas/OfferingType'
+      required:
+        - capacity
+        - costs
+        - created
+        - hidden
+        - id
+        - maximumQuantity
+        - minimumQuantity
+        - name
+        - priceCategory
+        - quantitySold
+        - sorting
+        - status
+        - type
+      title: Offering
+      type: object
+    OfferingCosts:
+      description: Represents the costs associated with an offering.
+      properties:
+        cost:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: cost
+          type: string
+        delivery:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: delivery
+          type: string
+        fee:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: fee
+          type: string
+        gross:
+          description: cost + fee - discount , not including tax
+          pattern: ^\w{3},\d+$
+          title: gross
+          type: string
+          x-faker:
+            random.arrayElement:
+              - '"USD,100000"'
+              - '"USD,25000"'
+        tax:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: tax
+          type: string
+        total:
+          description: total cost including tax
+          pattern: ^\w{3},\d+$
+          title: total
+          type: string
+      required:
+        - cost
+        - delivery
+        - fee
+        - gross
+        - tax
+        - total
+      title: OfferingCosts
+      type: object
+    OfferingStatus:
+      enum:
+        - deleted
+        - draft
+        - hidden
+        - live
+        - sold-out
+        - unavailable
+      title: OfferingStatus
+      type: string
+    OfferingType:
+      enum:
+        - admission
+        - donation
+        - drink
+        - membership
+        - merch
+        - other
+        - package
+        - service
+        - skip
+        - tc-ticket
+        - ticket
+        - voucher
+      title: OfferingType
+      type: string
+    Order:
+      description: Represents an order in the system.
+      properties:
+        agreements:
+          description: Agreement flags for terms and marketing opt-ins.
+          properties:
+            agreedToOrganizerTerms:
+              description: Whether the customer accepted the organizer’s custom terms.
+              title: agreedToOrganizerTerms
+              type: boolean
+            agreedToTerms:
+              description: >-
+                Whether the customer accepted the platform-wide terms of
+                service.
+              title: agreedToTerms
+              type: boolean
+            emailOptIn:
+              description: Whether the customer opted in to receive marketing emails.
+              title: emailOptIn
+              type: boolean
+            textOptIn:
+              description: Whether the customer opted in to receive marketing SMS messages.
+              title: textOptIn
+              type: boolean
+          title: agreements
+          type: object
+        answers:
+          additionalProperties:
+            type:
+              - string
+              - boolean
+          description: >-
+            Responses to dynamic questions during checkout (e.g. survey or
+            registration).
+          title: answers
+          type: object
+        changed:
+          description: >-
+            ISO 8601 timestamp indicating when the record was last updated, if
+            applicable.
+          title: changed
+          type: string
+        companyId:
+          title: companyId
+          type: string
+        context:
+          $ref: '#/components/schemas/OrderContext'
+        contextId:
+          description: |-
+            Namespaced identifier indicating what the order is associated with.
+            Format: "{type}_{id}", where type is "evt", "ven", or "org".
+          pattern: ^((evt|ven|org)_[a-zA-Z0-9]+)$
+          title: contextId
+          type: string
+        costs:
+          $ref: '#/components/schemas/OrderCosts'
+        coupons:
+          description: |-
+            List of applied coupons used in the order.
+            Supports multiple entries based on organizer preferences.
+          items:
+            $ref: '#/components/schemas/CouponSummary'
+          title: coupons
+          type: array
+        created:
+          description: ISO 8601 timestamp indicating when the record was created.
+          title: created
+          type: string
+        currency:
+          description: The currency code used for this order in ISO 4217 format.
+          pattern: ^[A-Z]{3}$
+          title: currency
+          type: string
+        customer:
+          $ref: '#/components/schemas/Customer'
+        forwarded:
+          description: >-
+            Freeform object containing metadata forwarded from the partner site
+
+            or embedding context. Can include UTM tags, user traits, campaign
+            IDs, etc.
+          title: forwarded
+        id:
+          description: Unique identifier for the record.
+          title: id
+          type: string
+        items:
+          description: A list of individual items included in the order.
+          items:
+            $ref: '#/components/schemas/OrderItem'
+          title: items
+          type: array
+        meta:
+          description: >-
+            Internal or computed metadata associated with the order.
+
+            May include fulfillment flags, debugging info, or derived
+            calculations.
+          title: meta
+        orderNumber:
+          description: |-
+            Human-readable order number for customer reference.
+            Often used in emails and receipts.
+          title: orderNumber
+          type: string
+        status:
+          $ref: '#/components/schemas/OrderStatus'
+        version:
+          const: '2025-04-15'
+          description: |-
+            Schema version identifier for this record.
+            Helps manage compatibility across client-server contracts.
+          title: version
+          type: string
+      required:
+        - agreements
+        - answers
+        - companyId
+        - context
+        - contextId
+        - costs
+        - created
+        - currency
+        - customer
+        - forwarded
+        - id
+        - items
+        - meta
+        - orderNumber
+        - status
+        - version
+      title: Order
+      type: object
+    OrderContext:
+      additionalProperties: {}
+      description: >-
+        Captures metadata and request/session context at the time the cart is
+        created.
+
+        Supports fraud detection, attribution, analytics, and partner session
+        tracking.
+
+
+        This interface is extensible — additional custom fields may be included
+        as needed.
+      properties:
+        cartSessionId:
+          description: >-
+            The unique cart session ID assigned at the time the cart was
+            created.
+
+            Helps track cart attribution across systems.
+          title: cartSessionId
+          type: string
+        ipAddresses:
+          description: |-
+            IP addresses associated with the user request.
+            Typically includes forwarded IPs and direct client IP.
+          items:
+            type: string
+          title: ipAddresses
+          type: array
+        originDomain:
+          description: |-
+            (Optional) Origin domain name if embedded or white-labeled.
+            Can help identify partner portals or iframe referrers.
+          title: originDomain
+          type: string
+        referrer:
+          description: |-
+            The referring URL from which the cart or checkout was initiated.
+            May be a partner site, marketing page, or event listing.
+          title: referrer
+          type: string
+        trackingId:
+          description: |-
+            (Optional) Campaign ID, UTM source, or tracking label.
+            Useful for affiliate and analytics systems.
+          title: trackingId
+          type: string
+        uid:
+          description: Authenticated user ID, or null for anonymous guests.
+          title: uid
+          type: string
+        userAgent:
+          description: Raw User-Agent header from the client request.
+          title: userAgent
+          type: string
+      required:
+        - cartSessionId
+        - ipAddresses
+        - referrer
+        - uid
+        - userAgent
+      title: OrderContext
+      type: object
+    OrderCosts:
+      properties:
+        delivery:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: delivery
+          type: string
+        discount:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: discount
+          type: string
+        fee:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: fee
+          type: string
+        gross:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: gross
+          type: string
+        preDiscount:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: preDiscount
+          type: string
+        subtotal:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: subtotal
+          type: string
+        tax:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: tax
+          type: string
+        total:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: total
+          type: string
+      required:
+        - delivery
+        - discount
+        - fee
+        - gross
+        - preDiscount
+        - subtotal
+        - tax
+        - total
+      title: OrderCosts
+      type: object
+    OrderItem:
+      description: Represents an individual item within an order.
+      properties:
+        costComponents:
+          description: Breakdown of cost components (e.g., base, service fee, delivery).
+          items:
+            $ref: '#/components/schemas/CalculatedCostComponent'
+          title: costComponents
+          type: array
+        costs:
+          $ref: '#/components/schemas/OrderItemCosts'
+        id:
+          description: Unique ID for this order item.
+          title: id
+          type: string
+        includedWithItemId:
+          description: >-
+            If this item is included as part of a package, this is the ID of the
+            parent item.
+
+            Otherwise, null.
+          title: includedWithItemId
+          type: string
+        meta:
+          description: |-
+            Any relevant metadata associated with this item.
+            This can include custom fields or additional information.
+          title: meta
+        offering:
+          $ref: '#/components/schemas/OrderItemOffering'
+        offeringId:
+          description: ID of the offering purchased.
+          title: offeringId
+          type: string
+        offeringType:
+          $ref: '#/components/schemas/OfferingType'
+        quantity:
+          description: Quantity purchased of this item.
+          title: quantity
+          type: number
+      required:
+        - costComponents
+        - costs
+        - id
+        - includedWithItemId
+        - meta
+        - offering
+        - offeringId
+        - offeringType
+        - quantity
+      title: OrderItem
+      type: object
+    OrderItemCosts:
+      description: >-
+        Cost breakdown for a specific item in the order.
+
+        Extends the standard `OfferingCosts` with totals calculated for quantity
+        and discounts.
+      properties:
+        cost:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: cost
+          type: string
+        delivery:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: delivery
+          type: string
+        discount:
+          description: Total discount amount applied to this item.
+          pattern: ^\w{3},\d+$
+          title: discount
+          type: string
+        fee:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: fee
+          type: string
+        gross:
+          description: cost + fee - discount , not including tax
+          pattern: ^\w{3},\d+$
+          title: gross
+          type: string
+          x-faker:
+            random.arrayElement:
+              - '"USD,100000"'
+              - '"USD,25000"'
+        preDiscount:
+          description: |-
+            Total price before discounts.
+            Equal to subtotal + fee, before subtracting discount.
+          pattern: ^\w{3},\d+$
+          title: preDiscount
+          type: string
+        subtotal:
+          description: Total cost of tickets before taxes, fees, and discounts.
+          pattern: ^\w{3},\d+$
+          title: subtotal
+          type: string
+        tax:
+          description: >-
+            A string representing a currency amount in the format `"USD,1000"`
+            where:
+
+            - `"USD"` is the 3-letter ISO currency code.
+
+            - The number after the comma represents the value in **minor units**
+            (e.g., cents for USD).
+
+
+            For example, `"USD,1000"` equals $10.00 (i.e., 1000 cents).
+          pattern: ^\w{3},\d+$
+          title: tax
+          type: string
+        total:
+          description: total cost including tax
+          pattern: ^\w{3},\d+$
+          title: total
+          type: string
+      required:
+        - cost
+        - delivery
+        - discount
+        - fee
+        - gross
+        - preDiscount
+        - subtotal
+        - tax
+        - total
+      title: OrderItemCosts
+      type: object
+    OrderItemOffering:
+      properties:
+        costs:
+          $ref: '#/components/schemas/OfferingCosts'
+        docPath:
+          description: doc assicated with this offering in the DB.
+          title: docPath
+          type: string
+        name:
+          description: Offering name, can be ticket name, vaucher name, etc...
+          title: name
+          type: string
+          x-faker: commerce.productName
+        type:
+          $ref: '#/components/schemas/OfferingType'
+      required:
+        - costs
+        - docPath
+        - name
+        - type
+      title: OrderItemOffering
+      type: object
+    OrderStatus:
+      enum:
+        - abandoned
+        - attending
+        - cancelled
+        - completed
+        - pending
+        - placed
+        - refunded
+        - started
+      title: OrderStatus
+      type: string
+    PackageInclude:
+      properties:
+        description:
+          title: description
+          type: string
+        id:
+          title: id
+          type: string
+        quantity:
+          title: quantity
+          type: number
+        ref:
+          title: ref
+        type:
+          $ref: '#/components/schemas/OfferingType'
+      required:
+        - description
+        - id
+        - quantity
+        - type
+      title: PackageInclude
+      type: object
+    Partial<Customer>:
+      properties:
+        age:
+          title: age
+          type: number
+        birthdate:
+          title: birthdate
+          type: string
+        displayName:
+          title: displayName
+          type: string
+        email:
+          title: email
+          type: string
+        first:
+          title: first
+          type: string
+        gender:
+          title: gender
+          type: string
+        last:
+          title: last
+          type: string
+        name:
+          title: name
+          type: string
+        phone:
+          title: phone
+          type: string
+        photoURL:
+          title: photoURL
+          type: string
+        uid:
+          title: uid
+          type: string
+      title: Partial<Customer>
+      type: object
+    Partial<OrderContext>:
+      properties:
+        cartSessionId:
+          description: >-
+            The unique cart session ID assigned at the time the cart was
+            created.
+
+            Helps track cart attribution across systems.
+          title: cartSessionId
+          type: string
+        ipAddresses:
+          description: |-
+            IP addresses associated with the user request.
+            Typically includes forwarded IPs and direct client IP.
+          items:
+            type: string
+          title: ipAddresses
+          type: array
+        originDomain:
+          description: |-
+            (Optional) Origin domain name if embedded or white-labeled.
+            Can help identify partner portals or iframe referrers.
+          title: originDomain
+          type: string
+        referrer:
+          description: |-
+            The referring URL from which the cart or checkout was initiated.
+            May be a partner site, marketing page, or event listing.
+          title: referrer
+          type: string
+        trackingId:
+          description: |-
+            (Optional) Campaign ID, UTM source, or tracking label.
+            Useful for affiliate and analytics systems.
+          title: trackingId
+          type: string
+        uid:
+          description: Authenticated user ID, or null for anonymous guests.
+          title: uid
+          type: string
+        userAgent:
+          description: Raw User-Agent header from the client request.
+          title: userAgent
+          type: string
+      title: Partial<OrderContext>
+      type: object
+    Partial<OrderItem>:
+      properties:
+        costComponents:
+          description: Breakdown of cost components (e.g., base, service fee, delivery).
+          items:
+            $ref: '#/components/schemas/CalculatedCostComponent'
+          title: costComponents
+          type: array
+        costs:
+          $ref: '#/components/schemas/OrderItemCosts'
+        id:
+          description: Unique ID for this order item.
+          title: id
+          type: string
+        includedWithItemId:
+          description: >-
+            If this item is included as part of a package, this is the ID of the
+            parent item.
+
+            Otherwise, null.
+          title: includedWithItemId
+          type: string
+        meta:
+          description: |-
+            Any relevant metadata associated with this item.
+            This can include custom fields or additional information.
+          title: meta
+        offering:
+          $ref: '#/components/schemas/OrderItemOffering'
+        offeringId:
+          description: ID of the offering purchased.
+          title: offeringId
+          type: string
+        offeringType:
+          $ref: '#/components/schemas/OfferingType'
+        quantity:
+          description: Quantity purchased of this item.
+          title: quantity
+          type: number
+      title: Partial<OrderItem>
+      type: object
+    Person:
+      description: Person interface
+      properties:
+        age:
+          title: age
+          type: number
+        birthdate:
+          title: birthdate
+          type: string
+        displayName:
+          title: displayName
+          type: string
+        first:
+          title: first
+          type: string
+        gender:
+          title: gender
+          type: string
+        last:
+          title: last
+          type: string
+        name:
+          title: name
+          type: string
+        photoURL:
+          title: photoURL
+          type: string
+      required:
+        - displayName
+        - first
+        - gender
+        - last
+        - name
+      title: Person
+      type: object
+    PersonContact:
+      properties:
+        email:
+          title: email
+          type: string
+        phone:
+          title: phone
+          type: string
+      required:
+        - email
+        - phone
+      title: PersonContact
+      type: object
+    Photo:
+      description: A photo object with resolution options and optional metadata.
+      properties:
+        2x:
+          description: High-resolution (2x) image URL.
+          title: 2x
+          type: string
+        caption:
+          description: Optional caption for the image.
+          title: caption
+          type: string
+        height:
+          description: Height of the image in pixels.
+          title: height
+          type: number
+        id:
+          description: Internal photo ID, if stored in a media system.
+          title: id
+          type: string
+        url:
+          description: >-
+            Primary image URL.
+
+            This is the default image URL to be used when no other resolution is
+            specified.
+          title: url
+          type: string
+          x-faker: image.imageUrl
+        width:
+          description: Width of the image in pixels.
+          title: width
+          type: number
+      required:
+        - url
+      title: Photo
+      type: object
+    PriceCategory:
+      enum:
+        - donation
+        - free
+        - other
+        - paid
+      title: PriceCategory
+      type: string
+    Record<string,ResolvedCartContextOffering>:
+      title: Record<string,ResolvedCartContextOffering>
+      type: object
+    ResolvedCartContext:
+      description: >-
+        Represents the resolved context associated with a cart session.
+
+        This may be an event, venue, or organizer, and is used to enrich the
+        cart with metadata
+
+        needed for UI rendering and pricing logic without requiring repeated DB
+        lookups.
+
+
+        Typically stored in `cart.meta.resolvedContext`.
+      properties:
+        id:
+          description: |-
+            Unique identifier of the context entity.
+            Typically matches the cart's `contextId` (e.g., "evt_abc123").
+          title: id
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        logo:
+          $ref: '#/components/schemas/Photo'
+        offerings:
+          $ref: '#/components/schemas/Record<string,ResolvedCartContextOffering>'
+        title:
+          description: |-
+            Human-readable title or name of the context entity.
+            Used for display in headers, summaries, and confirmations.
+          title: title
+          type: string
+      required:
+        - id
+        - title
+      title: ResolvedCartContext
+      type: object
+    ResolvedCartContextOffering:
+      properties:
+        offering:
+          $ref: '#/components/schemas/Offering'
+        path:
+          title: path
+          type: string
+      required:
+        - offering
+        - path
+      title: ResolvedCartContextOffering
+      type: object
+    Schedule:
+      description: A repeating or structured date schedule for an event or item.
+      properties:
+        daysOfWeek:
+          description: Days of the week (0 = Sunday, 6 = Saturday).
+          items:
+            type: number
+          title: daysOfWeek
+          type: array
+        end:
+          description: ISO-formatted UTC end datetime.
+          title: end
+          type: string
+        excludeDates:
+          description: Specific dates to exclude in "YYYY-MM-DD" format.
+          items:
+            type: string
+          title: excludeDates
+          type: array
+        includeDates:
+          description: Specific dates to include in "YYYY-MM-DD" format.
+          items:
+            type: string
+          title: includeDates
+          type: array
+        start:
+          description: ISO-formatted UTC start datetime.
+          title: start
+          type: string
+      required:
+        - end
+        - start
+      title: Schedule
+      type: object
+    Ticket:
+      properties:
+        capacity:
+          description: The maximum number of tickets that can be sold for this offering.
+          title: capacity
+          type: number
+          x-faker:
+            datatype.number:
+              max: 100
+              min: 10
+        category:
+          title: category
+          type: string
+        changed:
+          description: >-
+            ISO 8601 timestamp indicating when the record was last updated, if
+            applicable.
+          title: changed
+          type: string
+        costs:
+          $ref: '#/components/schemas/OfferingCosts'
+        created:
+          description: ISO 8601 timestamp indicating when the record was created.
+          title: created
+          type: string
+        description:
+          title: description
+          type: string
+        display_name:
+          title: display_name
+          type: string
+        id:
+          description: Unique identifier for the record.
+          title: id
+          type: string
+        included:
+          description: Items, products ,and vouchers included in this offering.
+          items:
+            $ref: '#/components/schemas/PackageInclude'
+          title: included
+          type: array
+          x-faker:
+            array.length: 0
+        instructions:
+          title: instructions
+          type: string
+        maximumQuantity:
+          description: Maximum number of tickets that can be purchased in a single order.
+          title: maximumQuantity
+          type: number
+          x-faker:
+            datatype.number:
+              max: 15
+              min: 4
+        minimumQuantity:
+          description: Minimum number of tickets that can be purchased in a single order.
+          title: minimumQuantity
+          type: number
+          x-faker:
+            datatype.number:
+              max: 4
+              min: 1
+        name:
+          description: Offering name, can be ticket name, vaucher name, etc...
+          title: name
+          type: string
+          x-faker: commerce.productName
+        order_confirmation_message:
+          title: order_confirmation_message
+          type: string
+        package:
+          title: package
+          type: boolean
+        parentId:
+          title: parentId
+          type: string
+        priceCategory:
+          $ref: '#/components/schemas/PriceCategory'
+        quantitySold:
+          title: quantitySold
+          type: number
+        refId:
+          title: refId
+          type: string
+        salesEnd:
+          title: salesEnd
+          type: string
+        salesStart:
+          title: salesStart
+          type: string
+        sorting:
+          title: sorting
+          type: number
+        source:
+          title: source
+          type: string
+        status:
+          $ref: '#/components/schemas/OfferingStatus'
+        ticketParentId:
+          title: ticketParentId
+          type: string
+        type:
+          enum:
+            - admission
+            - admission.tableCommitment
+            - package
+          title: type
+          type: string
+      required:
+        - capacity
+        - category
+        - costs
+        - created
+        - id
+        - maximumQuantity
+        - minimumQuantity
+        - name
+        - priceCategory
+        - quantitySold
+        - salesEnd
+        - salesStart
+        - sorting
+        - source
+        - status
+        - type
+      title: Ticket
+      type: object
+    TimeOrOffset:
+      anyOf:
+        - properties:
+            date:
+              description: Absolute time in ISO 8601 format.
+              title: date
+              type: string
+          required:
+            - date
+          type: object
+        - properties:
+            secondsBefore:
+              description: >-
+                Relative time before an anchor point (e.g. event start), in
+                seconds.
+              title: secondsBefore
+              type: number
+          required:
+            - secondsBefore
+          type: object
+      description: |-
+        Represents either an absolute or a relative time constraint.
+
+        - If using `date`, `secondsBefore` must not be present.
+        - If using `secondsBefore`, `date` must not be present.
+      title: TimeOrOffset
+    UpdatableCartSession:
+      properties:
+        customer:
+          $ref: '#/components/schemas/Partial<Customer>'
+        items:
+          description: Items the user has added to their cart.
+          items:
+            $ref: '#/components/schemas/Partial<OrderItem>'
+          title: items
+          type: array
+      required:
+        - items
+      title: UpdatableCartSession
+      type: object
+    VCDataRecord:
+      properties:
+        changed:
+          description: >-
+            ISO 8601 timestamp indicating when the record was last updated, if
+            applicable.
+          title: changed
+          type: string
+        companyId:
+          title: companyId
+          type: string
+        created:
+          description: ISO 8601 timestamp indicating when the record was created.
+          title: created
+          type: string
+        id:
+          description: Unique identifier for the record.
+          title: id
+          type: string
+        version:
+          const: '2025-04-15'
+          description: |-
+            Schema version identifier for this record.
+            Helps manage compatibility across client-server contracts.
+          title: version
+          type: string
+      required:
+        - companyId
+        - created
+        - id
+        - version
+      title: VCDataRecord
+      type: object
+    VenueBase:
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        formattedAddress:
+          title: formattedAddress
+          type: string
+        id:
+          title: id
+          type: string
+        logo:
+          $ref: '#/components/schemas/Photo'
+        name:
+          title: name
+          type: string
+        placeId:
+          title: placeId
+          type: string
+        public:
+          title: public
+          type: boolean
+        slug:
+          title: slug
+          type: string
+        tz:
+          title: tz
+          type: string
+      required:
+        - address
+        - formattedAddress
+        - id
+        - logo
+        - name
+        - public
+        - slug
+        - tz
+      title: VenueBase
+      type: object
+    VersionedDataRecord:
+      description: |-
+        Extension of `DataRecord` for resources returned from RESTful APIs.
+        Includes a schema version to ensure compatibility with evolving formats.
+      properties:
+        changed:
+          description: >-
+            ISO 8601 timestamp indicating when the record was last updated, if
+            applicable.
+          title: changed
+          type: string
+        created:
+          description: ISO 8601 timestamp indicating when the record was created.
+          title: created
+          type: string
+        id:
+          description: Unique identifier for the record.
+          title: id
+          type: string
+        version:
+          const: '2025-04-15'
+          description: |-
+            Schema version identifier for this record.
+            Helps manage compatibility across client-server contracts.
+          title: version
+          type: string
+      required:
+        - created
+        - id
+        - version
+      title: VersionedDataRecord
+      type: object
 paths:
   /events:
-    $ref: "./paths/events/index.yaml"
+    get:
+      summary: List all event profiles for the authenticated organizer
+      operationId: listEventProfiles
+      tags:
+        - Events
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: A list of event profiles
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - data
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - ok
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventProfile'
+        '401':
+          description: Unauthorized - missing organizerId
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                  error:
+                    type: string
+                    example: Unauthorized
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - status
+                  - error
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - error
+                  error:
+                    type: string
+                    example: Internal Server Error
   /events/{id}:
-    $ref: "./paths/events/[id].yaml"
+    get:
+      summary: Get event profile
+      operationId: getEvent
+      tags:
+        - Events
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the event
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - ok
+                  data:
+                    $ref: '#/components/schemas/EventProfile'
+        '404':
+          description: Not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  error:
+                    type: string
+  /events/{id}/tickets:
+    get:
+      summary: Get event tickets
+      operationId: getEventTickets
+      tags:
+        - Events
+      description: Retrieve a list of tickets for a specific event.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: The ID of the event
+        - in: query
+          name: status
+          required: false
+          schema:
+            oneOf:
+              - type: string
+              - type: array
+                items:
+                  type: string
+          description: Filter tickets by status (e.g., "live", "draft", etc.)
+      responses:
+        '200':
+          description: A list of tickets
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum:
+                      - ok
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Ticket'
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: error
+                  error:
+                    type: string
+  /cart/sessions:
+    post:
+      summary: Start a new cart session
+      tags:
+        - Cart
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - contextId
+              properties:
+                contextId:
+                  type: string
+                  example: evt_abc123
+                userAgent:
+                  type: string
+                  example: Mozilla/5.0
+                referrer:
+                  type: string
+                  example: https://example.com
+                ipAddresses:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Cart session started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartSession'
+        '500':
+          description: Server error
+  /cart/sessions/{id}:
+    get:
+      summary: Get a cart session by ID
+      tags:
+        - Cart
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Cart session ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cart session found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartSession'
+        '404':
+          description: Cart session not found
+        '500':
+          description: Server error
+    patch:
+      summary: Update a cart session
+      tags:
+        - Cart
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Cart session ID
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdatableCartSession'
+      responses:
+        '200':
+          description: Cart session updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartSession'
+        '404':
+          description: Cart session not found
+        '500':
+          description: Server error
+    delete:
+      summary: Cancel (soft delete) a cart session
+      tags:
+        - Cart
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Cart session ID
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Cart session cancelled
+        '500':
+          description: Server error
+  /cart/sessions/{id}/item:
+    post:
+      summary: Add, update, or remove an item (ticket) in a cart session
+      tags:
+        - Cart
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the cart session
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - offeringId
+                - quantity
+              properties:
+                offeringId:
+                  type: string
+                  description: The ID of the item to update
+                  example: item_123abc
+                quantity:
+                  type: number
+                  description: The quantity to set. Use 0 to remove the item
+                  example: 1
+      responses:
+        '200':
+          description: Cart session updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartSession'
+        '500':
+          description: Server error

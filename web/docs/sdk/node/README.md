@@ -1,9 +1,3 @@
----
-title: Node.js SDK
-sidebar_position: 4
----
-
-
 # @cohostvip/cohost-node
 
 > Official Node.js SDK for interacting with the Cohost API
@@ -63,6 +57,17 @@ More endpoints coming soon.
 - An active Cohost API token
 
 ---
+
+## 🗒️ Changelog
+See the latest changes [here](./CHANGELOG.md).
+
+---
+
+## 🚧 Roadmap
+Planned features and improvements are tracked [here](./ROADMAP.md).
+
+---
+
 
 ## 📄 License
 

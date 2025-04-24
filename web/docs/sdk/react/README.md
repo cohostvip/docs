@@ -1,8 +1,3 @@
----
-title: React SDK
-sidebar_position: 2
----
-
 # @cohostvip/cohost-react
 
 React bindings for the [Cohost API](https://cohost.vip), built on top of [`@cohostvip/cohost-node`](https://www.npmjs.com/package/@cohostvip/cohost-node).
@@ -86,6 +81,16 @@ See its documentation for available methods like:
 
 - React 18 or 19
 - Next.js 14 or 15
+
+---
+
+## 🗒️ Changelog
+See the latest changes [here](./CHANGELOG.md).
+
+---
+
+## 🚧 Roadmap
+Planned features and improvements are tracked [here](./ROADMAP.md).
 
 ---
 

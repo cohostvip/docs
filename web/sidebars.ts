@@ -52,8 +52,8 @@ const sidebars2: SidebarsConfig = {
       label: 'SDK',
       collapsed: false,
       items: [
-        'sdk/node',
-        'sdk/react',
+        'sdk/node/README',
+        'sdk/react/README',
       ],
     },
     {
